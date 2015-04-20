@@ -1,4 +1,7 @@
 ﻿using System.Collections.Generic;
+using System.Net;
+using System.Security.Policy;
+using System.Web;
 using DEG.ServiceCore;
 using DEG.ServiceCore.Authentication;
 using DEG.Twitter.Models;
@@ -50,6 +53,18 @@ namespace DEG.Twitter
         {
             var hashtagUrl = TweetsApiUrl +
                              "?q=%23" + hashtag +
+                             "&result_type=recent" +
+                             "&count=" + tweetCount;
+
+            var searchResults = GetObject<SearchResults>(hashtagUrl);
+            return searchResults.Tweets;
+        }
+
+        public IEnumerable<Tweet> SearchTweets(string hashtag, int tweetCount = 10)
+        {
+            var hashtagUrl = TweetsApiUrl +
+                             "?q=" + HttpUtility.UrlEncode(hashtag) +
+                             "&result_type=recent" +
                              "&count=" + tweetCount;
 
             var searchResults = GetObject<SearchResults>(hashtagUrl);
